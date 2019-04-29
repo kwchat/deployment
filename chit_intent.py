@@ -3,6 +3,9 @@ class chitintent:
         self.intent_what = ['뭐야', '알아', '는?', '은?', '누구야', '어디야']
         self.intent_howto = ['하는 법', '어떻게', '치는 법']
         self.intent_recom = ['추천해줘']
+        self.lang = 'ko'
+    def set_lang(self, flag):
+        self.lang = flag
     def classify(self, sentence):
         for intent in self.intent_what:
             if intent in sentence:

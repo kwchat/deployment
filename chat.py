@@ -11,6 +11,7 @@ from chit_intent import chitintent
 from konlpy.tag import Mecab
 from flask import Flask, request
 import sys
+from googletrans import Translator
 
 class ChatBot:
 
@@ -23,6 +24,10 @@ class ChatBot:
         self.sess = tf.Session()
         ckpt = tf.train.get_checkpoint_state(train_dir)
         self.model.saver.restore(self.sess, ckpt.model_checkpoint_path)
+        self.lang = 'ko'
+
+    def set_lang(self, flag):
+        self.lang = flag
 
     def run(self):
         sys.stdout.write("> ")
@@ -62,7 +67,12 @@ class ChatBot:
         return self.model.predict(self.sess, [enc_input], [dec_input])
 
     def _get_replay(self, msg):
+        translator = Translator()
         ci = chitintent()
+        if self.lang != "ko":
+            res = translator.translate(msg, dest='ko')
+            msg = res.text
+        
         chitclass = ci.classify(msg)
         if chitclass == 'what':
             mecab = Mecab()
@@ -96,14 +106,18 @@ class ChatBot:
                     curr_seq += 1
 
             reply = self.dialog.decode([dec_input], True)
+
+        if self.lang != 'ko':
+            res = translator.translate(reply, dest=self.lang)
+            reply = res.text
         
         return reply
 
 
 def main(_):
     print("깨어나는 중 입니다. 잠시만 기다려주세요...\n")
-
     chatbot = ChatBot(FLAGS.voc_path, FLAGS.train_dir)
+    chatbot.set_lang('en')
     if len(sys.argv) == 0:
         chatbot.run()
     elif sys.argv[1] == 'server':
