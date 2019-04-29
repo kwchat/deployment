@@ -9,6 +9,8 @@ from model import Seq2Seq
 from dialog import Dialog
 from chit_intent import chitintent
 from konlpy.tag import Mecab
+from flask import Flask, request
+import sys
 
 class ChatBot:
 
@@ -34,6 +36,17 @@ class ChatBot:
             sys.stdout.flush()
 
             line = sys.stdin.readline()
+    
+    def run_server(self):
+        app = Flask(__name__)
+
+        @app.route('/')
+        def home():
+            message = request.args.get('message')
+            res = self._get_replay(message)
+            return res
+            
+        app.run()
 
     def _decode(self, enc_input, dec_input):
         if type(dec_input) is np.ndarray:
@@ -91,7 +104,10 @@ def main(_):
     print("깨어나는 중 입니다. 잠시만 기다려주세요...\n")
 
     chatbot = ChatBot(FLAGS.voc_path, FLAGS.train_dir)
-    chatbot.run()
+    if len(sys.argv) == 0:
+        chatbot.run()
+    elif sys.argv[1] == 'server':
+        chatbot.run_server()
 
 
 if __name__ == "__main__":
