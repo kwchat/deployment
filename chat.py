@@ -7,7 +7,6 @@ import wikipedia as wiki
 from config import FLAGS
 from model import Seq2Seq
 from dialog import Dialog
-from chit_intent import chitintent
 from konlpy.tag import Mecab
 from flask import Flask, request
 import sys
@@ -68,12 +67,10 @@ class ChatBot:
 
     def _get_replay(self, msg):
         translator = Translator()
-        ci = chitintent()
         if self.lang != "ko":
             res = translator.translate(msg, dest='ko')
             msg = res.text
-        
-        chitclass = ci.classify(msg)
+        chitclass = ci.predict(msg)
         if chitclass == 'what':
             mecab = Mecab()
             nouns = mecab.nouns(msg)
@@ -83,10 +80,8 @@ class ChatBot:
                 reply = wiki.summary(target, sentences=1)
             except wiki.exceptions.DisambiguationError as e:
                 reply = '물어보신것이 너무 애매해요'
-        elif chitclass == 'howto':
-            reply = '죄송해요 아직 방법은 알려줄 수 없어요'
-        elif chitclass == 'recom':
-            reply = '죄송해요 아직 추천은 할 수 없어요'
+        elif chitclass == 'realtime':
+            reply = '아직 할 수 없는 기능입니다'
         else:
             enc_input = self.dialog.tokenizer(msg)
             enc_input = self.dialog.tokens_to_ids(enc_input)
@@ -117,8 +112,7 @@ class ChatBot:
 def main(_):
     print("깨어나는 중 입니다. 잠시만 기다려주세요...\n")
     chatbot = ChatBot(FLAGS.voc_path, FLAGS.train_dir)
-    chatbot.set_lang('en')
-    if len(sys.argv) == 0:
+    if len(sys.argv) == 1:
         chatbot.run()
     elif sys.argv[1] == 'server':
         chatbot.run_server()
