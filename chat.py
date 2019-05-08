@@ -11,10 +11,15 @@ from konlpy.tag import Mecab
 from flask import Flask, request
 import sys
 from googletrans import Translator
+from socket import *
+    
 
 class ChatBot:
 
     def __init__(self, voc_path, train_dir):
+        self.clientSock = socket(AF_INET, SOCK_STREAM)
+        self.clientSock.connect(('127.0.0.1', 5001))
+        print('연결 수립')
         self.dialog = Dialog()
         self.dialog.load_vocab(voc_path)
 
@@ -24,6 +29,12 @@ class ChatBot:
         ckpt = tf.train.get_checkpoint_state(train_dir)
         self.model.saver.restore(self.sess, ckpt.model_checkpoint_path)
         self.lang = 'ko'
+    
+    def sock_predict(self, msg):
+        self.clientSock.send(msg.encode('utf-8'))
+        res = self.clientSock.recv(1024)
+        res = res.decode('utf-8')
+        return res
 
     def set_lang(self, flag):
         self.lang = flag
@@ -70,7 +81,7 @@ class ChatBot:
         if self.lang != "ko":
             res = translator.translate(msg, dest='ko')
             msg = res.text
-        chitclass = ci.predict(msg)
+        chitclass = self.sock_predict(msg)
         if chitclass == 'what':
             mecab = Mecab()
             nouns = mecab.nouns(msg)
