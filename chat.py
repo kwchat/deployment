@@ -2,12 +2,10 @@ import tensorflow as tf
 import numpy as np
 import math
 import sys
-import wikipedia as wiki
 
 from config import FLAGS
 from model import Seq2Seq
 from dialog import Dialog
-from konlpy.tag import Mecab
 from flask import Flask, request
 import sys
 from googletrans import Translator
