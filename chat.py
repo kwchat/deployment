@@ -17,8 +17,10 @@ from socket import *
 class ChatBot:
 
     def __init__(self, voc_path, train_dir):
-        self.clientSock = socket(AF_INET, SOCK_STREAM)
-        self.clientSock.connect(('127.0.0.1', 5001))
+        self.ciSock = socket(AF_INET, SOCK_STREAM)
+        self.ciSock.connect(('127.0.0.1', 5001))
+        self.drqaSock = socket(AF_INET, SOCK_STREAM)
+        self.drqaSock.connect(('127.0.0.1', 5002))
         print('연결 수립')
         self.dialog = Dialog()
         self.dialog.load_vocab(voc_path)
@@ -30,11 +32,18 @@ class ChatBot:
         self.model.saver.restore(self.sess, ckpt.model_checkpoint_path)
         self.lang = 'ko'
     
-    def sock_predict(self, msg):
-        self.clientSock.send(msg.encode('utf-8'))
-        res = self.clientSock.recv(1024)
+    def predict_intent(self, msg):
+        self.ciSock.send(msg.encode('utf-8'))
+        res = self.ciSock.recv(1024)
         res = res.decode('utf-8')
         return res
+    
+    def predict_drqa(self, msg):
+        self.drqaSock.send(msg.encode('utf-8'))
+        res = self.drqaSock.drqaSock.recv(1024)
+        res = res.decode('utf-8')
+        return res
+
 
     def set_lang(self, flag):
         self.lang = flag
@@ -81,16 +90,13 @@ class ChatBot:
         if self.lang != "ko":
             res = translator.translate(msg, dest='ko')
             msg = res.text
-        chitclass = self.sock_predict(msg)
+        chitclass = self.predict_intent(msg)
         if chitclass == 'what':
-            mecab = Mecab()
-            nouns = mecab.nouns(msg)
-            target = nouns[0]
-            wiki.set_lang('ko')
-            try:
-                reply = wiki.summary(target, sentences=1)
-            except wiki.exceptions.DisambiguationError as e:
-                reply = '물어보신것이 너무 애매해요'
+            res = translator.translate(msg, dest='en')
+            msg = res.text
+            reply = self.predict_drqa(msg)
+            res = translator.translate(reply, dest=self.lang)
+            reply = res.text
         elif chitclass == 'realtime':
             reply = '아직 할 수 없는 기능입니다'
         else:
