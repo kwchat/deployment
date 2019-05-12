@@ -1,2 +1,2 @@
-model_checkpoint_path: "/mnt/c/Users/onting/Documents/deep_chat/chitintent/conversation"
-all_model_checkpoint_paths: "/mnt/c/Users/onting/Documents/deep_chat/chitintent/conversation"
+model_checkpoint_path: "/home/ican/deep_chat/chitintent/conversation"
+all_model_checkpoint_paths: "/home/ican/deep_chat/chitintent/conversation"

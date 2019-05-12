@@ -96,7 +96,7 @@ banner = """
 Interactive DrQA
 >> process(question, candidates=None, top_n=1, n_docs=5)
 >> usage()
-"""0
+"""
 
 
 def usage():
@@ -107,14 +107,15 @@ def main():
     serverSock = socket(AF_INET, SOCK_STREAM)
     serverSock.bind(('', 5002))
     serverSock.listen(1)
+    print('Listening')
 
     connectionSock, addr = serverSock.accept()
     print('연결 수립')
 
     while True:
         msg = connectionSock.recv(1024)
-        print('메시지 받음')
         msg = msg.decode('utf-8')
+        print('메시지 받음', msg)
         res = process(msg, n_docs=3)
         connectionSock.send(res.encode('utf-8'))
         print('결과 전송')

@@ -17,8 +17,8 @@ class ChatBot:
     def __init__(self, voc_path, train_dir):
         self.ciSock = socket(AF_INET, SOCK_STREAM)
         self.ciSock.connect(('127.0.0.1', 5001))
-        self.drqaSock = socket(AF_INET, SOCK_STREAM)
-        self.drqaSock.connect(('127.0.0.1', 5002))
+        #self.drqaSock = socket(AF_INET, SOCK_STREAM)
+        #self.drqaSock.connect(('127.0.0.1', 5002))
         print('연결 수립')
         self.dialog = Dialog()
         self.dialog.load_vocab(voc_path)

@@ -8,6 +8,7 @@ def main():
         serverSock = socket(AF_INET, SOCK_STREAM)
         serverSock.bind(('', 5001))
         serverSock.listen(1)
+        print('Listening')
 
         connectionSock, addr = serverSock.accept()
         print('연결 수립')
