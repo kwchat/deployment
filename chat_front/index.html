@@ -95,6 +95,23 @@
                 scrollToBottom();
             })
 
+            socket.on('bot message', function(data){
+                var msg =`
+                    <article>
+                        <div class="avatar">
+                            <img src="support.png" alt="">
+                        </div>
+                        <div class="msg">
+                            <div class="pointer"></div>
+                            <div class="inner-msg">
+                                <p>` + data.msg + `</p>
+                            </div>
+                        </div>
+                    </article>`
+                $messages.append(msg);
+                scrollToBottom();
+            })
+
             $message.keypress(function (e) {
                 console.log("key pressed");
                 if(e.which == 13 && !e.shiftKey) {        

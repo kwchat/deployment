@@ -28,11 +28,14 @@ io.sockets.on('connection', function(socket){
         io.sockets.emit('new message', {msg: data});
     });
 
-    socket.on('send message', function(data){
-        axios.get('http://:')
+    socket.on('send message', function(data){   
+        var url = encodeURI('http://localhost:5000/?message='+data)
+        axios.get(url)
         .then(function (response) {
           // handle success
           console.log(response);
+          io.sockets.emit('bot message', response.data)
+
         })
         .catch(function (error) {
           // handle error
