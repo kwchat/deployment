@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    <title>Messaging Interface</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+    <link rel="stylesheet" href="/style.css">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+        <div class="container">
+            <aside class="users">
+                <header>
+                    <h1>KW Chatbot</h1>
+                </header>
+                <ul>
+                    <li>
+                        <div class="avatar top">
+                            <img src="support.png" alt="">
+                        </div>
+                        <div class="users-list">
+                            <div class="username">
+                                <p>광운이</p>
+                            </div>
+                            <div class="text">
+                                <p>안녕 나는 광운챗봇</p>
+                            </div>
+                        </div>
+                        <div class="timestamp">
+                            <p>8:32 PM</p>
+                        </div>
+                    </li>
+                </ul>
+            </aside>
+            <section id="chat-screen">
+                <section id="messages">
+                    <article>
+                        <div class="avatar">
+                            <img src="support.png" alt="">
+                        </div>
+                        <div class="msg">
+                            <div class="pointer"></div>
+                            <div class="inner-msg">
+                                <p>안녕 나는 챗봇이야! 궁금한게 있으면 뭐든지 물어 봐!</p>
+                            </div>
+                        </div>
+                    </article>
+                </section>
+                <form id="messageForm" class="msg-compose">
+                    <i style="padding-top:3px" class="fas fa-paperclip"></i>
+                    <textarea placeholder="Say something..." id="message"></textarea>
+                    <button><i class="fab fa-telegram-plane"></i></button>
+                </form>
+
+            </section>
+        </div>
+    </div> 
+
+    <script>
+        function scrollToBottom() {
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        $(function(){
+            console.log('join the function');
+            var socket = io.connect();
+            var $messageForm = $('#messageForm');
+            var $message = $('#message');
+            var $messages = $('#messages');
+
+            $messageForm.submit(function(e){
+                e.preventDefault();
+                console.log('Submitted');
+                socket.emit('send message', $message.val());
+                $message.val('');
+            })
+
+            socket.on('new message', function(data){
+                var msg = `
+                    <article class="right">
+                        <div class="avatar">
+                            <img src="student.png" alt="">
+                        </div>
+                        <div class="msg">
+                            <div class="pointer"></div>
+                            <div class="inner-msg">
+                                <p>` + data.msg + `</p>
+                            </div>
+                        </div>
+                    </article>`;
+                $messages.append(msg);
+                scrollToBottom();
+            })
+
+            $message.keypress(function (e) {
+                console.log("key pressed");
+                if(e.which == 13 && !e.shiftKey) {        
+                    socket.emit('send message', $message.val());
+                    $message.val('');
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
