@@ -2,7 +2,8 @@
 import tensorflow as tf
 import numpy as np
 import re
-
+from konlpy.tag import Mecab
+from pykospacing import spacing
 from config import FLAGS
 
 
@@ -36,7 +37,8 @@ class Dialog():
             return tokens
 
     def _decode_to_string(self, tokens):
-        text = ' '.join(tokens)
+        text = ''.join(tokens)
+        text = spacing(text)
         return text.strip()
 
     def cut_eos(self, indices):
@@ -158,11 +160,8 @@ class Dialog():
 
     def tokenizer(self, sentence):
         # 공백으로 나누고 특수문자는 따로 뽑아낸다.
-        words = []
-        _TOKEN_RE_ = re.compile("([.,!?\"':;)(])")
-
-        for fragment in sentence.strip().split():
-            words.extend(_TOKEN_RE_.split(fragment))
+        mecab = Mecab()
+        words = mecab.morphs(sentence)
 
         return [w for w in words if w]
 

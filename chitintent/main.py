@@ -1,3 +1,5 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"]="-1"
 from config import FLAGS
 from model import Model
 from socket import *

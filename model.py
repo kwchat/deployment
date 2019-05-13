@@ -10,7 +10,7 @@ class Seq2Seq:
     cost = None
     train_op = None
 
-    def __init__(self, vocab_size, n_hidden=128, n_layers=3):
+    def __init__(self, vocab_size, n_hidden=256, n_layers=4):
         self.learning_late = 0.001
 
         self.vocab_size = vocab_size
