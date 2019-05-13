@@ -34,6 +34,7 @@ io.sockets.on('connection', function(socket){
         .then(function (response) {
           // handle success
           console.log(response);
+          console.log('머임 : ', response.data)
           io.sockets.emit('bot message', response.data)
 
         })

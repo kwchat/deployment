@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width", initial-scale="1">
-    <title>Messaging Interface</title>
+    <title>KW Chatbot</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
     <link rel="stylesheet" href="/style.css">
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -26,7 +26,7 @@
                                 <p>광운이</p>
                             </div>
                             <div class="text">
-                                <p>안녕 나는 광운챗봇</p>
+                                <p>나는 딥러닝 기반 챗봇이야</p>
                             </div>
                         </div>
                         <div class="timestamp">
@@ -44,7 +44,7 @@
                         <div class="msg">
                             <div class="pointer"></div>
                             <div class="inner-msg">
-                                <p>안녕 나는 챗봇이야! 궁금한게 있으면 뭐든지 물어 봐!</p>
+                                <p>안녕 나는 챗봇이야! 궁금한게 있으면 뭐든지 물어 봐</p>
                             </div>
                         </div>
                     </article>
@@ -65,7 +65,6 @@
         }
         
         $(function(){
-            console.log('join the function');
             var socket = io.connect();
             var $messageForm = $('#messageForm');
             var $message = $('#message');
@@ -73,7 +72,6 @@
 
             $messageForm.submit(function(e){
                 e.preventDefault();
-                console.log('Submitted');
                 socket.emit('send message', $message.val());
                 $message.val('');
             })
@@ -104,7 +102,7 @@
                         <div class="msg">
                             <div class="pointer"></div>
                             <div class="inner-msg">
-                                <p>` + data.msg + `</p>
+                                <p>` + data + `</p>
                             </div>
                         </div>
                     </article>`
@@ -113,7 +111,6 @@
             })
 
             $message.keypress(function (e) {
-                console.log("key pressed");
                 if(e.which == 13 && !e.shiftKey) {        
                     socket.emit('send message', $message.val());
                     $message.val('');
