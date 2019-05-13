@@ -94,7 +94,7 @@ class Model():
             self.saver.save(sess, self.model_path)
     
     def predict(self, sentence):
-        intent_class = ['others', 'what', 'realtime']
+        intent_class = ['others', 'what']
         with tf.Session() as sess:
             self.saver.restore(sess, self.model_path)
             a = sess.run(self.hypothesis, feed_dict={self.X: [word2vec(sentence, self.max_length)]})

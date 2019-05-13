@@ -12,6 +12,7 @@ from flask import Flask, request
 import sys
 from googletrans import Translator
 from socket import *
+from langdetect import detect
     
 
 class ChatBot:
@@ -30,7 +31,6 @@ class ChatBot:
         self.sess = tf.Session()
         ckpt = tf.train.get_checkpoint_state(train_dir)
         self.model.saver.restore(self.sess, ckpt.model_checkpoint_path)
-        self.lang = 'ko'
     
     def predict_intent(self, msg):
         self.ciSock.send(msg.encode('utf-8'))
@@ -43,10 +43,6 @@ class ChatBot:
         res = self.drqaSock.recv(1024)
         res = res.decode('utf-8')
         return res
-
-
-    def set_lang(self, flag):
-        self.lang = flag
 
     def run(self):
         sys.stdout.write("> ")
@@ -86,8 +82,9 @@ class ChatBot:
         return self.model.predict(self.sess, [enc_input], [dec_input])
 
     def _get_replay(self, msg):
+        lang = detect(msg)
         translator = Translator()
-        if self.lang != "ko":
+        if lang != "ko":
             res = translator.translate(msg, dest='ko')
             msg = res.text
         chitclass = self.predict_intent(msg)
@@ -95,7 +92,7 @@ class ChatBot:
             res = translator.translate(msg, dest='en')
             msg = res.text
             reply = self.predict_drqa(msg)
-            res = translator.translate(reply, dest=self.lang)
+            res = translator.translate(reply, dest=lang)
             reply = res.text
         elif chitclass == 'realtime':
             reply = '아직 할 수 없는 기능입니다'
@@ -119,8 +116,8 @@ class ChatBot:
 
             reply = self.dialog.decode([dec_input], True)
 
-        if self.lang != 'ko':
-            res = translator.translate(reply, dest=self.lang)
+        if lang != 'ko':
+            res = translator.translate(reply, dest=lang)
             reply = res.text
         
         return reply
