@@ -30,7 +30,15 @@
                             </div>
                         </div>
                         <div class="timestamp">
-                            <p>8:32 PM</p>
+                            <p id="date">8:32 PM</p>
+                        </div>
+                    </li>
+                    <li id="example">
+                        <div>
+                        <span id="subject">한 단어로 대답할 수 있게 물어봐주세요</span><br/><br/>
+                        ex) c언어를 개발한 사람은 누구야?&nbsp;&nbsp;&nbsp;데니스 리치<br/><br/>
+                        <span id="ex">비틀즈가 해체 된 년도가 언제야?&nbsp;&nbsp;&nbsp;1964년</span><br/><br/>
+                        <span id="ex">대한민국의 인구 수가 몇명이야?&nbsp;&nbsp;&nbsp;7500만</span><br/><br/>
                         </div>
                     </li>
                 </ul>
@@ -69,6 +77,26 @@
             var $messageForm = $('#messageForm');
             var $message = $('#message');
             var $messages = $('#messages');
+            var $date_pos = $('#date');
+
+            var d = new Date();
+            $date_pos.empty();
+            var ampm = 'AM';
+            var hour = d.getHours();
+            var minute = d.getMinutes();
+
+            if(d.getHours()>12){
+                hour = d.getHours() - 12;
+                mapm = 'PM';
+            }
+
+            if(minute < 10){
+                minute = '0' + toString(minute);
+            }
+            console.log("들어와야지");
+            console.log("hours : ", hour);
+            console.log("minutes : ", minute);
+            $date_pos.append(hour + ':' + minute + ' ' + ampm);
 
             $messageForm.submit(function(e){
                 e.preventDefault();

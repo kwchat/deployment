@@ -38,16 +38,15 @@ io.sockets.on('connection', function(socket){
         request.on('response', function(response) {
             console.log(response);
             var res = response.result.fulfillment.speech
-            console.log("뭔데? : ", res)
-            console.log(typeof(res))
-            if(res == '몰라 바보야'){
+
+            if(res == 'aaa'){
                 var url = encodeURI('http://localhost:5000/?message='+data)
                 axios.get(url)
                 .then(function (response) {
                   // handle success
-                  var data = response.data;
+                  res = response.data;
                   if(data.length>20){
-                      var res = data.substring(0, 21) + '<br>' + data.substring(21);
+                      res = data.substring(0, 21) + '<br>' + data.substring(21);
                   }
                   io.sockets.emit('bot message', res)
                 })
@@ -57,7 +56,7 @@ io.sockets.on('connection', function(socket){
                 })
             }
             else{
-                io.sockets.emit('bot message', response.result.fulfillment.speech)
+                io.sockets.emit('bot message', res)
             }
         });
         request.on('error', function(error) {

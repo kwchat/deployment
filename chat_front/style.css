@@ -66,6 +66,20 @@ html{
     border-bottom: 1px solid rbga(255, 255, 255, 0.1);
 }
 
+#example{
+    padding-top:30px;
+    padding-left:30px;
+    font-size:12px
+}
+
+#subject{
+    font-size:16px;
+}
+
+#ex{
+    padding-left:20px;
+}
+
 .users ul li:nth-last-child{
     border-bottom: none;
 }

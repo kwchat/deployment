@@ -28,9 +28,9 @@ class ChatBot:
 
         self.model = Seq2Seq(self.dialog.vocab_size)
 
-        self.sess = tf.Session()
-        ckpt = tf.train.get_checkpoint_state(train_dir)
-        self.model.saver.restore(self.sess, ckpt.model_checkpoint_path)
+        # self.sess = tf.Session()
+        # ckpt = tf.train.get_checkpoint_state(train_dir)
+        # self.model.saver.restore(self.sess, ckpt.model_checkpoint_path)
     
     def predict_intent(self, msg):
         self.ciSock.send(msg.encode('utf-8'))
