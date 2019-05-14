@@ -84,10 +84,10 @@ class ChatBot:
             input = res.text
         chitclass = self.predict_intent(input)
         if chitclass == 'what':
-            res = translator.translate(input, source='ko' dest='en')
+            res = translator.translate(input, source='ko', target='en')
             input = res.text
             reply = self.predict_drqa(input)
-            res = translator.translate(reply, dest=lang)
+            res = translator.translate(reply, source='en', target='ko')
             reply = res.text
         else:
             infer_data = [apply_nlpy(remove_special_char(input))]
