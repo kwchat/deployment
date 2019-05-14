@@ -3,6 +3,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 const axios = require('axios');
+var apiai = require('apiai');
+var ai = apiai("664548d3292b4d9697a5d5e7fb093a81");
 
 users = [];
 connections = [];
@@ -13,6 +15,7 @@ app.use(express.static(__dirname));
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 })
+
 
 io.sockets.on('connection', function(socket){
     connections.push(socket);
@@ -29,18 +32,37 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('send message', function(data){   
-        var url = encodeURI('http://localhost:5000/?message='+data)
-        axios.get(url)
-        .then(function (response) {
-          // handle success
-          console.log(response);
-          console.log('머임 : ', response.data)
-          io.sockets.emit('bot message', response.data)
-
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-        })
+        var request = ai.textRequest(data, {
+            sessionId: 'kw-chatbot'
+        });
+        request.on('response', function(response) {
+            console.log(response);
+            var res = response.result.fulfillment.speech
+            console.log("뭔데? : ", res)
+            console.log(typeof(res))
+            if(res == '몰라 바보야'){
+                var url = encodeURI('http://localhost:5000/?message='+data)
+                axios.get(url)
+                .then(function (response) {
+                  // handle success
+                  var data = response.data;
+                  if(data.length>20){
+                      var res = data.substring(0, 21) + '<br>' + data.substring(21);
+                  }
+                  io.sockets.emit('bot message', res)
+                })
+                .catch(function (error) {
+                  // handle error
+                  console.log(error);
+                })
+            }
+            else{
+                io.sockets.emit('bot message', response.result.fulfillment.speech)
+            }
+        });
+        request.on('error', function(error) {
+            console.log(error);
+        });
+        request.end();
     });
 });

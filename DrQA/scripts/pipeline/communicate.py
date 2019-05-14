@@ -77,7 +77,7 @@ DrQA = pipeline.DrQA(
 # ------------------------------------------------------------------------------
 
 
-def process(question, candidates=None, top_n=1, n_docs=5):
+def process(question, candidates=None, top_n=1, n_docs=10):
     predictions = DrQA.process(
         question, candidates, top_n, n_docs, return_context=True
     )
@@ -116,7 +116,7 @@ def main():
         msg = connectionSock.recv(1024)
         msg = msg.decode('utf-8')
         print('메시지 받음', msg)
-        res = process(msg, n_docs=3)
+        res = process(msg, n_docs=10)
         connectionSock.send(res.encode('utf-8'))
         print('결과 전송')
         
