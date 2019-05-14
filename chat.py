@@ -94,8 +94,6 @@ class ChatBot:
             reply = self.predict_drqa(msg)
             res = translator.translate(reply, dest=lang)
             reply = res.text
-        elif chitclass == 'realtime':
-            reply = '아직 할 수 없는 기능입니다'
         else:
             enc_input = self.dialog.tokenizer(msg)
             enc_input = self.dialog.tokens_to_ids(enc_input)
