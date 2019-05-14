@@ -5,7 +5,7 @@ import math
 import sys
 import re
 from flask import Flask, request
-from googletrans import Translator
+from papago import Translator
 from socket import *
 from langdetect import detect
 
@@ -74,17 +74,17 @@ class ChatBot:
 
     def _do_reply(self, input):
         lang = detect(input)
-        translator = Translator()
+        translator = Translator(os.environ['CLIENT_ID'], os.environ['CLIENT_SECRET'])
         
         if len(input) == 0:
             return ''
 
         if lang != "ko":
-            res = translator.translate(input, dest='ko')
+            res = translator.translate(input, source=lang, target='ko')
             input = res.text
         chitclass = self.predict_intent(input)
         if chitclass == 'what':
-            res = translator.translate(input, dest='en')
+            res = translator.translate(input, source='ko' dest='en')
             input = res.text
             reply = self.predict_drqa(input)
             res = translator.translate(reply, dest=lang)
@@ -117,7 +117,11 @@ class ChatBot:
                         sent_id,
                         tgt_eos=self.hparams.eos,
                         subword_option=self.hparams.subword_option)
-            reply = translation.decode('utf-8')    
+            reply = translation.decode('utf-8')
+
+        if lang != "ko":
+            res = translator.translate(reply, source='ko', target=lang)
+            reply = res.text
         return reply
 
     def nmt_main(self, flags, default_hparams, scope=None):
