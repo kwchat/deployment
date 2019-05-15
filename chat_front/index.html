@@ -95,7 +95,8 @@
             }
 
             if(minute < 10){
-                minute = '0' + toString(minute);
+                minute.toString(minute)
+                minute = '0'.append(toString(minute));
             }
             console.log("들어와야지");
             console.log("hours : ", hour);
