@@ -8,6 +8,7 @@ from flask import Flask, request
 from papago import Translator
 from socket import *
 from langdetect import detect
+import hgtk
 
 # other module
 
@@ -89,6 +90,10 @@ class ChatBot:
             reply = self.predict_drqa(input)
             res = translator.translate(reply, source='en', target='ko')
             reply = res.text
+            if hgtk.checker.has_batchim(reply[-1]):
+                reply = reply + '이에요'
+            else:
+                reply = reply + '에요'
         else:
             infer_data = [apply_nlpy(remove_special_char(input))]
 
