@@ -9,7 +9,7 @@ from papago import Translator
 from socket import *
 from langdetect import detect
 import hgtk
-
+import os
 # other module
 
 
