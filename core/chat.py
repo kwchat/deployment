@@ -81,7 +81,10 @@ class ChatBot:
             return ''
 
         if lang != "ko":
-            res = translator.translate(input, source=lang, target='ko')
+            try:
+                res = translator.translate(input, source=lang, target='ko')
+            except:
+                res = translator.translate(input, source='en', target='ko')
             input = res.text
         chitclass = self.predict_intent(input)
         if chitclass == 'what':
