@@ -38,25 +38,25 @@ io.sockets.on('connection', function(socket){
         });
         request.on('response', function(response) {
             console.log('??? : ', response);
-            var res = response.result.fulfillment.speech // dialogflow의 답변
+            var res_dialog = response.result.fulfillment.speech // dialogflow의 답변
 
             var url = encodeURI('http://localhost:5000/?message='+data)
             axios.get(url)
             .then(function (response) {
-                res = response.data; // wiki 또는 seq2seq로부터 온 답변
+                res_data = response.data.data; // wiki 또는 seq2seq로부터 온 답변
+                res_class = response.data.intent_class;
 
-                console.log("hahahahahaha : ", res)
+                if(res_class == 'what'){ // wiki
+                    io.sockets.emit('bot message', res_data)
+                }
 
-                // 답변이 wiki로부터 왔다면
-                    // 온거 뱉기
-
-                // 답변이 seq2seq로부터 왔다면 그리고 dialogflow 답변이 aaa가 아니라면
-                    // dialog뱉기
-
-                // 둘다 아니라면
-                    // 온거 뱉기
-                    
-                io.sockets.emit('bot message', res)
+                else if(res_class == 'others' && res_dialog != 'aaa'){ // dialog
+                    io.sockets.emit('bot message', res_dialog)
+                }
+                
+                else{ // seq2seq
+                    io.sockets.emit('bot message', res_data)
+                }            
             })
             .catch(function (error) {
                 // handle error

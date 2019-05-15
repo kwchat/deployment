@@ -130,7 +130,11 @@ class ChatBot:
             reply = translation.decode('utf-8')
 
         if lang != "ko":
-            res = translator.translate(reply, source='ko', target=lang)
+            try:
+                res = translator.translate(reply, source='ko', target=lang)
+            except:
+                res = translator.translate(reply, source='ko', target='en')
+
             reply = res.text
         return reply
 
