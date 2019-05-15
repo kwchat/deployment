@@ -37,31 +37,47 @@ io.sockets.on('connection', function(socket){
         });
         request.on('response', function(response) {
             console.log(response);
-            var res = response.result.fulfillment.speech
+            var res = response.result.fulfillment.speech // dialogflow의 답변
 
-            if(res == 'aaa'){
-                var url = encodeURI('http://localhost:5000/?message='+data)
-                axios.get(url)
-                .then(function (response) {
-                  // handle success
-                  res = response.data;
-                  if(data.length>20){
-                      res = data.substring(0, 21) + '<br>' + data.substring(21);
-                  }
-                  io.sockets.emit('bot message', res)
-                })
-                .catch(function (error) {
-                  // handle error
-                  console.log(error);
-                })
-            }
-            else{
+            
+            var url = encodeURI('http://localhost:5000/?message='+data)
+            axios.get(url)
+            .then(function (response) {
+                res = response.data; // wiki 또는 seq2seq로부터 온 답변
+
+                // 답변이 wiki로부터 왔다면
+                    // 온거 뱉기
+
+                // 답변이 seq2seq로부터 왔다면 그리고 dialogflow 답변이 aaa가 아니라면
+                    // dialog뱉기
+
+                // 둘다 아니라면
+                    // 온거 뱉기
+                    
                 io.sockets.emit('bot message', res)
-            }
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            
         });
-        request.on('error', function(error) {
-            console.log(error);
-        });
-        request.end();
+
+    // socket.on('send message', function(data){   
+    //     var url = encodeURI('http://localhost:5000/?message='+data)
+        
+    //     axios.get(url)
+    //     .then(function (response) {
+    //         // handle success
+    //         res = response.data;
+    //         if(data.length>20){
+    //             res = data.substring(0, 21) + '<br>' + data.substring(21);
+    //         }
+    //         io.sockets.emit('bot message', res)
+    //     })
+    //     .catch(function (error) {
+    //         // handle error
+    //         console.log(error);
+    //     })    
     });
 });
