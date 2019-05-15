@@ -90,10 +90,11 @@ class ChatBot:
             reply = self.predict_drqa(input)
             res = translator.translate(reply, source='en', target='ko')
             reply = res.text
-            if hgtk.checker.has_batchim(reply[-1]):
-                reply = reply + '이에요'
-            else:
-                reply = reply + '에요'
+            if hgtk.checker.is_hangul(reply[-1]):
+                if hgtk.checker.has_batchim(reply[-1]):
+                    reply = reply + '이에요'
+                else:
+                    reply = reply + '에요'
         else:
             infer_data = [apply_nlpy(remove_special_char(input))]
 
