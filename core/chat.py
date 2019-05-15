@@ -4,7 +4,7 @@ import numpy as np
 import math
 import sys
 import re
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from papago import Translator
 from socket import *
 from langdetect import detect
@@ -198,8 +198,10 @@ class ChatBot:
         @app.route('/')
         def home():
             message = request.args.get('message')
+            intent_class = self.predict_intent(message)
             res = self._do_reply(message)
-            return res
+            json_dict = {'intent_class': intent_class, 'data': res}
+            return jsonify(json_dict)
 
         self.nmt_main(flags, default_hparams)
         try:
