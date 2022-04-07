@@ -1,2 +1,2 @@
-# deep_chat
-relational chatbot
+# KW Chat
+Deep leaning based open domain chatbot
